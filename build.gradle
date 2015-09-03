@@ -1,0 +1,29 @@
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+dependencies {
+    compile ("com.hazelcast:hazelcast:3.4.5")
+    compile ("com.hazelcast:hazelcast-spring:3.4.5")
+    compile ("org.springframework:spring-context:3.2.4.RELEASE")
+    compile ("com.atomikos:transactions:3.9.3")
+    compile ("com.atomikos:transactions-jdbc:3.9.3")
+    compile ("javax.transaction:javax.transaction-api:1.2")
+    compile ("org.slf4j:jul-to-slf4j:1.7.5")
+    compile ("ch.qos.logback:logback-classic:1.0.13")
+    runtime ("org.codehaus.janino:janino:2.6.1")
+}
+
+task runOffer(type:JavaExec) {
+    main = 'foo.hz.app.OfferAndPollApplication'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runPeek(type:JavaExec) {
+    main = 'foo.hz.app.PeekApplication'
+    classpath = sourceSets.main.runtimeClasspath
+}
