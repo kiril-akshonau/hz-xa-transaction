@@ -7,8 +7,8 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 
 dependencies {
-    compile ("com.hazelcast:hazelcast:3.4.5")
-    compile ("com.hazelcast:hazelcast-spring:3.4.5")
+    compile ("com.hazelcast:hazelcast:3.5.2")
+    compile ("com.hazelcast:hazelcast-spring:3.5.2")
     compile ("org.springframework:spring-context:3.2.4.RELEASE")
     compile ("com.atomikos:transactions:3.9.3")
     compile ("com.atomikos:transactions-jdbc:3.9.3")

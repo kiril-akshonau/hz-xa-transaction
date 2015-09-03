@@ -2,9 +2,8 @@ package foo.hz.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.TransactionalQueue;
+import com.hazelcast.transaction.HazelcastXAResource;
 import com.hazelcast.transaction.TransactionContext;
-import com.hazelcast.transaction.TransactionOptions;
-import com.hazelcast.transaction.TransactionOptions.TransactionType;
 
 import foo.hz.domain.BusinessObject;
 
@@ -21,8 +20,6 @@ import javax.transaction.xa.XAResource;
 public class MyTransactionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyTransactionService.class);
-    private static final TransactionOptions OPTIONS = new TransactionOptions()
-            .setTransactionType(TransactionType.TWO_PHASE);
 
     @Resource(name = "jtaUserTransactionManager")
     private TransactionManager tm;
@@ -34,13 +31,12 @@ public class MyTransactionService {
 
         tm.begin();
 
-        TransactionContext txContext = hz.newTransactionContext(OPTIONS);
-        XAResource xaResource = txContext.getXaResource();
-
+        HazelcastXAResource xaResource = hz.getXAResource();
         Transaction transaction = tm.getTransaction();
         transaction.enlistResource(xaResource);
 
         try {
+            TransactionContext txContext = xaResource.getTransactionContext();
             TransactionalQueue<BusinessObject> queue = txContext.getQueue("businessObjectQueue");
 
             businessObject = queue.peek();
@@ -57,13 +53,12 @@ public class MyTransactionService {
     public void offer(BusinessObject businessObject) throws Throwable {
         tm.begin();
 
-        TransactionContext txContext = hz.newTransactionContext(OPTIONS);
-        XAResource xaResource = txContext.getXaResource();
-
+        HazelcastXAResource xaResource = hz.getXAResource();
         Transaction transaction = tm.getTransaction();
         transaction.enlistResource(xaResource);
 
         try {
+            TransactionContext txContext = xaResource.getTransactionContext();
             TransactionalQueue<BusinessObject> queue = txContext.getQueue("businessObjectQueue");
 
             queue.offer(businessObject);
@@ -79,13 +74,12 @@ public class MyTransactionService {
     public void pollAndExit() throws Throwable {
         tm.begin();
 
-        TransactionContext txContext = hz.newTransactionContext(OPTIONS);
-        XAResource xaResource = txContext.getXaResource();
-
+        HazelcastXAResource xaResource = hz.getXAResource();
         Transaction transaction = tm.getTransaction();
         transaction.enlistResource(xaResource);
 
         try {
+            TransactionContext txContext = xaResource.getTransactionContext();
             TransactionalQueue<BusinessObject> queue = txContext.getQueue("businessObjectQueue");
 
             queue.poll();
